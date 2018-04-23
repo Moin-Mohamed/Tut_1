@@ -1,0 +1,100 @@
+#___________________PROBLEM 3_______________________
+
+import numpy as np
+
+x0=0
+x1=np.pi/2
+
+#Integrating cos(x)
+
+
+delta=[10,30,100,200,1000]
+
+for dx in delta:
+	x=np.linspace(x0,x1,dx)
+	y=np.cos(x)
+	tot=y.sum()*(x1/dx)
+	error=1-tot
+	a=np.log(error)/np.log(dx)    
+	print 'the integral is ' + repr(tot) + 'for ' + repr(dx) + ' points with an error of ' + repr(error)
+
+#Error
+#a tends to -1 as n increases
+#Hence, error scales as: Error~n**-1
+
+#_____________________PROBLEM 4__________________________
+
+#Odd-points from an array
+
+#n is a chosen array of numbers
+
+x=np.arange(n)
+print x[1::2]
+
+#Even points skipping first and last
+
+x=np.arange(n)
+print x[2:-2:2]
+
+#____________________PROBLEM 5_____________________________
+
+#Simpsons equation defined as ((b-a)/3n)(Y0+4Yeven+2Yodd+Ylast)
+
+import math
+import numpy as np
+
+
+x0=0
+x1=np.pi/2
+
+delta=[10,30,100,300,1000]
+
+def f(x):
+	return np.cos(x)
+
+def simp(f,x0,x1, n):
+	h=(x1-x0)/float(n)
+	sumeven=0
+	sumodd=0
+	for a in range(1,n/2):
+		sumeven += f(2*h*a)
+	for a in range(1,(n/2)+1):
+		sumodd += f((2*a-1)*h)
+	integral = (h/3.)*(f(x0)+4*sumodd+2*sumeven+f(x1))
+	return integral
+
+for n in delta:
+	Error=abs(1-simp(f,x0,x1,n))
+	beta=math.log(error,n)
+	print 'The integral is '+repr(simp(f,x0,x1,n))+' with an error of '+repr(Error)+' for ' +repr(n)+' points. Error proportionality is ' +repr(beta)
+
+#For Simpsons rule, the error~n**-5
+#This implies that you would need ~160000 points in Question 3 to replicate the accuracy of 11 #points using Simpsons rule
+
+
+#_______________________PROBLEM 6_________________________
+
+from matplotlib import pyplot as plt
+
+Err1=[]
+Err2=[]
+
+for dx in delta:
+	x=np.linspace(x0,x1,dx)
+	y=np.cos(x)
+	tot=y.sum()*(x1/dx)
+	error=1-tot
+	Err1+=[error]
+
+for n in delta:
+	error=abs(1-simp(f,x0,x1,n))
+	Err2+=[Error]
+
+plt.plot(delta,Err1,'r')
+plt.plot(delta,Err2,'g')
+plt.yscale('log')
+plt.xlabel("n")
+plt.ylabel("Error")
+plt.show()
+
+
